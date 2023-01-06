@@ -2,30 +2,32 @@
 local safeZoneX =-837.0428
 local safeZoneY = -221.7211
 local safeZoneZ = 37.1655
-local safeZoneRadius = 50.0
 
--- Create a marker at the safe zone location
+-- radius of the safe zone in meters
+local safeZoneRadius = 50
 local retval --[[ Blip ]] =
 	AddBlipForRadius(safeZoneX, safeZoneY, safeZoneZ, safeZoneRadius)
+  SetBlipColour(blip, 1)
+SetBlipAlpha(blip, 128)
 
--- Create a trigger to check if players are inside the safe zone
 Citizen.CreateThread(function()
-  while true do
-    Citizen.Wait(0)
-
-    -- Get the player's position
-    local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1)))
-
-    -- Check if the player is inside the safe zone
-    if Vdist2(safeZoneX, safeZoneY, safeZoneZ, playerX, playerY, playerZ) < safeZoneRadius * safeZoneRadius then
-      -- The player is inside the safe zone. Disable the player's weapons.
-      SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
-      SetPlayerCanDoDriveBy(PlayerId(), false)
-      SetPedDropsWeaponsWhenDead(GetPlayerPed(-1), true)
-    else
-      -- The player is outside the safe zone. Enable the player's weapons.
-      SetPlayerCanDoDriveBy(PlayerId(), true)
-      SetPedDropsWeaponsWhenDead(GetPlayerPed(-1), false)
+    while true do
+        -- check if the player is within the safe zone
+        local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
+        local distance = Vdist(safeZoneX, safeZoneY, safeZoneZ, playerX, playerY, playerZ)
+        if distance < safeZoneRadius then
+            -- player is in safe zone, do something (e.g. disable combat)
+          --  SetPedCombatAbility(PlayerId(), 0)
+          SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
+          SetPlayerCanDoDriveBy(PlayerId(), false)
+          --print("in")
+        else
+            -- player is not in safe zone, do something else (e.g. enable combat)
+         --   SetPedCombatAbility(PlayerId(), 1)
+        -- print("out")
+        SetPlayerCanDoDriveBy(PlayerId(), true)
+        end
+        Citizen.Wait(1000)
     end
-  end
 end)
+
