@@ -1,1 +1,7 @@
+Config={}
 
+Config.zones=
+{coords=}
+
+
+}
