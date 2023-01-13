@@ -20,11 +20,12 @@ Citizen.CreateThread(function()
           --  SetPedCombatAbility(PlayerId(), 0)
           SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey("WEAPON_UNARMED"), true)
           SetPlayerCanDoDriveBy(PlayerId(), false)
-          --print("in")
+	 lib.showTextUI(Translation.Zone, {icon = "fa-solid fa-circle-exclamation"})
+          --print("in")--for debug  only
         else
             -- player is not in safe zone, do something else (e.g. enable combat)
          --   SetPedCombatAbility(PlayerId(), 1)
-        -- print("out")
+        -- print("out") --for debug only 
         SetPlayerCanDoDriveBy(PlayerId(), true)
         end
         Citizen.Wait(1000)
